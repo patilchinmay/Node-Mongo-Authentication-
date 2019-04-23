@@ -1,0 +1,28 @@
+{
+  "name": "cupidic",
+  "version": "1.0.0",
+  "description": "Resurrection of cupidic.com from 2014",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/patilchinmay/cupidic.git"
+  },
+  "author": "Chinmay Patil",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/patilchinmay/cupidic/issues"
+  },
+  "homepage": "https://gitlab.com/patilchinmay/cupidic#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "http": "0.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.11"
+  }
+}
