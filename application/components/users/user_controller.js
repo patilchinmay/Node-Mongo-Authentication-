@@ -12,12 +12,12 @@ function hash_password(password){
         try{
             bcryptjs.hash(password, 13, (err, hash) => {
                 if (err){
-                    response_service.send({
+                    return response_service.send({
                         status: response_service.getCode().codes.FAILURE,
                         message: 'An error occured!',
                         data: err
                     }, res);
-                    reject(error);
+                    
                 }else{
                     console.log(`password_hash_ = ${hash}`)
                     resolve(hash); 
@@ -25,14 +25,36 @@ function hash_password(password){
             });
     
         } catch (error){
-            response_service.send({
+            return response_service.send({
                 status: response_service.getCode().codes.FAILURE,
                 message: 'An error occured!',
                 data: error
             }, res);
-            reject(error);
         }
     });    
+}
+
+// Check if the user already exists
+function check_unique_user(email){
+    return new Promise( async (resolve, reject) => {
+        try{
+            User.find({email:email})
+                .exec()
+                .then((existing_user) => {
+                    if (existing_user.length >= 1){
+                        resolve(true); // User already exists
+                    } else {
+                        resolve(false); // User doesn't exist
+                    }
+                })
+        } catch (error) {
+            return response_service.send({
+                status: response_service.getCode().codes.FAILURE,
+                message: 'An error occured!',
+                data: error
+            }, res);
+        }
+    })
 }
 
 exports.user_register = async (req, res, next) => {
@@ -40,8 +62,17 @@ exports.user_register = async (req, res, next) => {
     const password  = req.body.password || '';
 
     if (email && password) {
-        // Create user in the mongo db.
-        
+        // Check if the user already exists. Return either true or false.
+        let existing_user = await check_unique_user(email);
+
+        // Stop execution and return if the user already exists!
+        if(existing_user == true){
+            return response_service.send({
+                    status: response_service.getCode().codes.CONFLICT,
+                    message: 'Email already exists!'
+                }, res);
+        }
+
         let password_hash = await hash_password(password);
 
         const user = new User({
@@ -53,7 +84,8 @@ exports.user_register = async (req, res, next) => {
 
         console.log(user);
         console.log(`password_hash = ${password_hash}`);
-
+        
+        // Create user in the mongo db.
         user.save()
             .then(saved_user =>{
                 response_service.send({
