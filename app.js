@@ -12,7 +12,7 @@ const morgan = require('morgan');
 // const connectionURI = "mongodb://"+process.env.DB_USER+":"+process.env.DB_PWD+"@"+process.env.DB_HOST+"/"+process.env.DB_DB;
 // mongoose.connect(connectionURI);
 
-mongoose.connect("mongodb://localhost/database");
+mongoose.connect("mongodb://localhost/cupidic_test");
 
 // 'mongodb://user:pwd@host:port/database'
 
