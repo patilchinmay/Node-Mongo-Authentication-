@@ -4,7 +4,22 @@ const app = express();
 
 const bodyParser = require('body-parser');
 
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
+
+const morgan = require('morgan');
+
+// Connect to mongodb
+// const connectionURI = "mongodb://"+process.env.DB_USER+":"+process.env.DB_PWD+"@"+process.env.DB_HOST+"/"+process.env.DB_DB;
+// mongoose.connect(connectionURI);
+
+mongoose.connect("mongodb://localhost/database");
+
+// 'mongodb://user:pwd@host:port/database'
+
+mongoose.Promise = global.Promise;
+
+// Morgan is a request logging tool
+app.use(morgan('dev'));
 
 // const userRoutes = require('./routes/users.js');
 
@@ -34,6 +49,10 @@ app.use('/', express.static('view/static/'));
 app.get('/ping', (req, res) => {
     res.send('pong\n');
   });
+
+// Initialize routes
+const userRoutes = require('./application/components/users/user_routes');
+app.use('/user', userRoutes);
 
 // Handle requests to invalid URLs and throw errors
 app.use((req, res, next) => {
