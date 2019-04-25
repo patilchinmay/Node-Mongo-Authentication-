@@ -1,5 +1,5 @@
 var MONGO = {
-    DB_NAME: 'database',
+    DB_NAME: 'test',
     DB_HOST: 'localhost',
     DB_USER: '',
     DB_PASS: ''
