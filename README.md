@@ -12,14 +12,15 @@ Prerequisite:
 Steps to run:
 ----------------------------------------
 
-`
-npm install
-npm run
-Browse to localhost:3000/ping
-`
+```
+1. npm install
+2. npm run
+3. Browse to localhost:3000/ping
+```
 
-Note:
+Notes:
 -------------------------------------
 
 - After running successfully, the project will automatically create a mongo database named **test** and create **users** collection in it.
-- Import the postman collection from `postman` folder into your local postman and test user login, registration functionality.
+- Import the postman collection from `postman` folder into your local postman and test user registration and login functionality.
+- Credentials from `config/*` are being used in `app.js` and `application/components/users/user_controller.js`. While running it in production, please serve the credential through environment variable rather than these files as a security best practise.
