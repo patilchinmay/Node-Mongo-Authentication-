@@ -1,3 +1,3 @@
-# Cupidic
+# Node-Mongo-Authentication
 
-Resurrection of Cupidic.com website from 2014.
+A user login-registration template using NodeJS, Express, BodyParser, Mongo, JWT.
