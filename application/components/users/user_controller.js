@@ -179,7 +179,15 @@ exports.user_login = async (req, res, next) => {
     }else{
         response_service.send({
             status: response_service.getCode().codes.BAD_REQUEST,
-            data: 'Please provide email and password',
+            message: 'Please provide email and password',
         }, res);
     }
+}
+
+exports.user_protected = async (req, res, next) => {
+    return response_service.send({
+        status: response_service.getCode().codes.OK,
+        message: 'User is logged in',
+        data: req.userData  // userData is populated in check-auth middleware. It is called in the routes files while calling this function.
+    }, res);
 }
