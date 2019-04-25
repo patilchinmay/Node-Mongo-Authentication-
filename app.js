@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 // Routes which should handle requests
 // app.use('/users', userRoutes);
 
-// Serve static files
+// Serve static files 
 // app.use('/', express.static('view'));
 
 // ping location
