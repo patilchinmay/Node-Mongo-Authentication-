@@ -15,4 +15,12 @@ router.post('/login', UserController.user_login);
 
 router.post('/protected', checkAuth, UserController.user_protected);
 
+// Forgot password. Ask to enter email.
+
+router.post('/forgot_password', UserController.forgot_password);
+
+// Reset password.
+
+router.post('/reset_password', UserController.reset_password);
+
 module.exports = router;
