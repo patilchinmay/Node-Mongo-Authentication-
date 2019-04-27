@@ -191,3 +191,73 @@ exports.user_protected = async (req, res, next) => {
         data: req.userData  // userData is populated in check-auth middleware. It is called in the routes files while calling this function.
     }, res);
 }
+
+// Forgot password. Get email from user. Send a link to reset password.
+exports.forgot_password = async (req, res, next) => {
+    const email = req.body.email || '';
+
+    if(email){
+        let email_exists = await check_unique_user(email); // Returns true or false.
+
+        // If email already exists.
+        if(email_exists == true){
+
+            const password_reset_token = jwt.sign({
+                email: email,
+            },
+            config.JWT_KEY,         // SERVE THROUGH ENVIRONMENT VARIABLE IN PRODUCTION
+            {
+                expiresIn: "15m" // Update var expires
+            });
+            
+            console.log(`password_reset_token = ${password_reset_token}`);
+
+            var transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                  user: 'YOUR-EMAIL@DOMAIN.COM',
+                  pass: 'YOUR-PASSWORD'
+                }
+            });
+
+            var mailOptions = {
+                from: 'YOUR-EMAIL@DOMAIN.COM',
+                to: email,
+                subject: 'Reset your password',
+                text: `Link to reset password: link`
+            };
+
+            // Remove this section and uncomment the section next to it to start sending emails.
+            // return response_service.send({
+            //     status: response_service.getCode().codes.OK,
+            //     message: `If ${email} is a registered email, a link to reset password has been sent to it.`,
+            //     data: password_reset_token
+            // }, res);
+
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                    return response_service.send({
+                        status: response_service.getCode().codes.EMAIL_NOT_SENT,
+                        message: `An error occured!`,
+                        data: error
+                    }, res);
+                } else {
+                    return response_service.send({
+                        status: response_service.getCode().codes.OK,
+                        message: `If ${email} is a registered email, a link to reset password has been sent to it.`,
+                        data: info.response
+                    }, res);
+                }
+            }); 
+
+        }else if(email_exists == false){
+        // If email doesn't exist.
+
+            return response_service.send({
+                status: response_service.getCode().codes.OK,
+                message: `If ${email} is a registered email, a link to reset password has been sent to it.`,
+                data: false
+            }, res);
+        }
+    }
+}
