@@ -261,3 +261,49 @@ exports.forgot_password = async (req, res, next) => {
         }
     }
 }
+
+// Reset Password
+exports.reset_password = async (req, res, next) => {
+    
+    let password_reset_token = req.headers.authorization || '';
+    let new_password = req.body.new_password || '';
+    let confirm_password = req.body.confirm_password || '';
+    
+    try{
+        const decoded = jwt.verify(password_reset_token, config.JWT_KEY);
+
+        req.userData = decoded;
+
+        if(password_reset_token && new_password === confirm_password){
+        
+            let password_hash = await hash_password(new_password);
+
+            User.update({email : req.userData.email},
+                {
+                    $set: {password: password_hash}
+                }
+                )
+                .exec()
+                .then(result => {
+                    return response_service.send({
+                        status: response_service.getCode().codes.OK,
+                        message: `Password changed!`,
+                        data: result
+                    }, res);
+                })
+    
+        }else{
+            return response_service.send({
+                status: response_service.getCode().codes.INVALID_TOKEN,
+                message: `Passwords do not match!`,
+                data: false
+            }, res);
+        }
+
+    }catch(error){
+        return response_service.send({
+            status: response_service.getCode().codes.INVALID_TOKEN,
+            message: 'An error occurred!',
+        }, res);
+    }
+}
